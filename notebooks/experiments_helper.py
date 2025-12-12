@@ -7,7 +7,7 @@ import time
 import joblib
 import sys
 from sklearn.model_selection import train_test_split
-import pathos.multiprocessing as mp
+#import pathos.multiprocessing as mp
 
 sys.path.append("../")
 from cfmining.criteria import *
