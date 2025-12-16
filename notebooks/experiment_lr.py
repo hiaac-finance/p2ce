@@ -16,11 +16,11 @@ import argparse
 SEED = 0
 
 
-def run(dataset_name):
+def run(dataset_name, n_samples=200):
     max_changes = 3
     objective = "abs_diff"
     dataset, X_train, Y_train, model, outlier_detection, individuals = get_data_model(dataset_name, "LogisticRegression")
-    n = min(200, len(individuals))
+    n = min(n_samples, len(individuals))
     individuals = individuals.sample(n = n, random_state=SEED)
     outlier_detection.contamination = dataset.outlier_contamination
     action_set = get_action_set(dataset, X_train, default_step_size=0.05)
@@ -98,12 +98,14 @@ if __name__ == "__main__":
         default=0,
         help="ID of the dataset to use (0: german, 1: taiwan, 2: adult)",
     )
-    datasets = [
-        "german",
-        "taiwan",
-        "adult"
-    ]
+    parser.add_argument(
+        "--n_samples",
+        type=int,
+        default=1_000,
+        help="Number of samples to use from the dataset",
+    )
+    datasets = ["german", "taiwan", "adult", "adult"]
     args = parser.parse_args()
     dataset_name = datasets[args.dataset_id]
-    
-    run(dataset_name)
+
+    run(dataset_name, n_samples=args.n_samples)

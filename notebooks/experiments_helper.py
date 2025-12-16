@@ -35,7 +35,11 @@ def get_data_model(dataset_name, model_name="LGBMClassifier"):
         dataset = Adult(use_categorical=False)
     elif dataset_name == "adult_cat":
         dataset = Adult(use_categorical=True)
-
+    elif dataset_name == "acsincome":
+        dataset = ACSIncome(use_categorical=False)
+    elif dataset_name == "homecredit":
+        dataset = HomeCredit(use_categorical=False)
+    
     X, Y = dataset.load_data()
     X_train, X_test, Y_train, _ = train_test_split(
         X, Y, test_size=TEST_RATIO, random_state=SEED, shuffle=True
@@ -102,8 +106,6 @@ def run_experiments(
     if output_file is not None:
         results.to_csv(output_file, index=False)
     
-    with open("log.txt", "+a") as f:
-        f.write(f"Finished {output_file}\n")
     return results
 
 

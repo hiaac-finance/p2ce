@@ -255,8 +255,14 @@ if __name__ == "__main__":
         default=0,
         help="ID of the dataset to use (0: german, 1: taiwan, 2: adult)",
     )
+    parser.add_argument(
+        "--n_samples",
+        type=int,
+        default=1_000,
+        help="Number of samples to use from the dataset",
+    )
     datasets = ["german", "taiwan", "adult"]
     args = parser.parse_args()
     dataset_name = datasets[args.dataset_id]
 
-    run(dataset_name)
+    run(dataset_name, n_samples=args.n_samples)

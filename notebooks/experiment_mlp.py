@@ -17,7 +17,7 @@ import argparse
 
 SEED = 0
 
-def run(dataset_name, n_samples=5):
+def run(dataset_name, n_samples=200):
     max_changes = 3
     objective = "abs_diff"
     dataset, X_train, Y_train, model, outlier_detection, individuals = get_data_model(dataset_name, "MLPClassifier")
@@ -45,12 +45,12 @@ def run(dataset_name, n_samples=5):
         time_limit=np.inf,
     )
 
-    run_experiments(
-        method,
-        individuals=individuals,
-        model=model_wrap,
-        output_file=f"../results/mlp/{dataset}/p2ce_deep_{objective}.csv"
-    );
+    # run_experiments(
+    #     method,
+    #     individuals=individuals,
+    #     model=model_wrap,
+    #     output_file=f"../results/mlp/{dataset}/p2ce_deep_{objective}.csv"
+    # );
 
     for feat in action_set:
         feat.flip_direction = 1
@@ -71,12 +71,12 @@ def run(dataset_name, n_samples=5):
         max_changes = max_changes,
     )
 
-    run_experiments(
-        method,
-        individuals=individuals,
-        model=model_wrap,
-        output_file=f"../results/mlp/{dataset_name}/mapocam_{objective}.csv"
-    );
+    # run_experiments(
+    #     method,
+    #     individuals=individuals,
+    #     model=model_wrap,
+    #     output_file=f"../results/mlp/{dataset_name}/mapocam_{objective}.csv"
+    # );
 
 
     print("Running DICE with ", dataset_name)
@@ -90,12 +90,12 @@ def run(dataset_name, n_samples=5):
         continuous_features = dataset.continuous_features,
     )
 
-    run_experiments(
-        method,
-        individuals = individuals,
-        model = model_wrap,
-        output_file=f"../results/mlp/{dataset_name}/dice.csv"
-    )
+    # run_experiments(
+    #     method,
+    #     individuals = individuals,
+    #     model = model_wrap,
+    #     output_file=f"../results/mlp/{dataset_name}/dice.csv"
+    # )
 
 
     print("Running NICE with ", dataset_name)
@@ -107,12 +107,12 @@ def run(dataset_name, n_samples=5):
         cat_features = dataset.categoric_features,
     )
 
-    run_experiments(
-        method,
-        individuals = individuals,
-        model = model_wrap,
-        output_file=f"../results/mlp/{dataset_name}/nice.csv"
-    );
+    # run_experiments(
+    #     method,
+    #     individuals = individuals,
+    #     model = model_wrap,
+    #     output_file=f"../results/mlp/{dataset_name}/nice.csv"
+    # );
 
 
     action_set = get_action_set(dataset, X_train, default_step_size=0.05)
@@ -154,12 +154,12 @@ def run(dataset_name, n_samples=5):
         time_limit=np.inf,
     )
 
-    run_experiments(
-        method,
-        individuals=individuals,
-        model=model_wrap,
-        output_file=f"../results/mlp/{dataset}/p2ce_deep_multi.csv"
-    );
+    # run_experiments(
+    #     method,
+    #     individuals=individuals,
+    #     model=model_wrap,
+    #     output_file=f"../results/mlp/{dataset}/p2ce_deep_multi.csv"
+    # );
 
 
     print("Running MAPOCAM with multiple objectives with ", dataset_name)
@@ -237,8 +237,14 @@ if __name__ == "__main__":
         default=0,
         help="ID of the dataset to use (0: german, 1: taiwan, 2: adult)",
     )
+    parser.add_argument(
+        "--n_samples",
+        type=int,
+        default=1_000,
+        help="Number of samples to use from the dataset",
+    )
     datasets = ["german", "taiwan", "adult"]
     args = parser.parse_args()
     dataset_name = datasets[args.dataset_id]
 
-    run(dataset_name)
+    run(dataset_name, n_samples=args.n_samples)
