@@ -1,5 +1,6 @@
 import numpy as np
 import pandas as pd
+from scipy.io import arff
 
 
 def preprocess_german():
@@ -125,8 +126,8 @@ def preprocess_taiwan():
     for feature in cat_features:
         processed_df[feature] = df[feature].astype("category")
 
-    processed_df = processed_df.drop(columns = monetary_features)
-    #transform to float
+    processed_df = processed_df.drop(columns=monetary_features)
+    # transform to float
     processed_df = processed_df.astype(float)
     processed_df.to_csv("../data/taiwan.csv", index=False)
 
@@ -134,22 +135,134 @@ def preprocess_taiwan():
 def preprocess_adult():
     df = pd.read_csv("../data/adult_raw.csv")
     df["is_male"] = (df["gender"] == "Male").astype(int)
-    df["has_degree"] = df["education"].isin(
-        ["Bachelors", "Masters", "Doctorate"]
-    ).astype(int)
-    df["is_married"] = df["marital-status"].isin(
-        ["Married-civ-spouse", "Married-spouse-absent", "Married-AF-spouse"]
-    ).astype(int)
-    df["gov_job"] = df["workclass"].isin(
-        ["State-gov", "Federal-gov", "Local-gov"]
-    ).astype(int)
-    df = df.drop(columns=["fnlwgt", "educational-num", "native-country", "gender", "education", "marital-status", "workclass"])
+    df["has_degree"] = (
+        df["education"].isin(["Bachelors", "Masters", "Doctorate"]).astype(int)
+    )
+    df["is_married"] = (
+        df["marital-status"]
+        .isin(["Married-civ-spouse", "Married-spouse-absent", "Married-AF-spouse"])
+        .astype(int)
+    )
+    df["gov_job"] = (
+        df["workclass"].isin(["State-gov", "Federal-gov", "Local-gov"]).astype(int)
+    )
+    df = df.drop(
+        columns=[
+            "fnlwgt",
+            "educational-num",
+            "native-country",
+            "gender",
+            "education",
+            "marital-status",
+            "workclass",
+        ]
+    )
     df.columns = [col.replace("-", "_") for col in df.columns]
     df["income"] = df["income"].map({">50K": 1, "<=50K": 0})
     df.to_csv("../data/adult.csv", index=False)
+
+
+def preprocess_acsincome():
+    file = arff.loadarff("../data/acs_income.arff")
+    df = pd.DataFrame(file[0]).sample(50_000, random_state=0)
+    y = df["PINCP"].values
+    df = df.drop(columns=["PINCP"])
+    df["has_degree"] = df["SCHL"].isin([20, 21, 22, 23, 24]).astype(int)
+    df["is_married"] = df["MAR"].isin([1]).astype(int)
+    df["gov_job"] = df["COW"].isin([3, 4, 5]).astype(int)
+
+    columns_to_drop = ["OCCP", "POBP", "RELP", "RAC1P", "SCHL", "MAR", "COW", "ST"]
+    df = df.drop(columns=columns_to_drop)
+
+    df["target"] = (y > 50000).astype(int)
+    df.to_csv("../data/acsincome.csv", index=False)
+
+
+def preprocess_homecredit():
+    df = pd.read_csv("../data/homecredit_raw.csv")
+
+    cols_to_drop = [
+        "SK_ID_CURR",
+        "CODE_GENDER",
+        "ORGANIZATION_TYPE",
+        "NAME_FAMILY_STATUS",
+        "DAYS_REGISTRATION",
+        "DAYS_ID_PUBLISH",
+        "WEEKDAY_APPR_PROCESS_START",
+        "HOUR_APPR_PROCESS_START",
+        "COMMONAREA_AVG",
+        "COMMONAREA_MODE",
+        "COMMONAREA_MEDI",
+        "NONLIVINGAPARTMENTS_AVG",
+        "NONLIVINGAPARTMENTS_MODE",
+        "NONLIVINGAPARTMENTS_MEDI",
+        "FONDKAPREMONT_MODE",
+        "LIVINGAPARTMENTS_AVG",
+        "LIVINGAPARTMENTS_MODE",
+        "LIVINGAPARTMENTS_MEDI",
+        "FLOORSMIN_AVG",
+        "FLOORSMIN_MODE",
+        "FLOORSMIN_MEDI",
+        "YEARS_BUILD_AVG",
+        "YEARS_BUILD_MODE",
+        "YEARS_BUILD_MEDI",
+        "LANDAREA_AVG",
+        "LANDAREA_MODE",
+        "LANDAREA_MEDI",
+        "BASEMENTAREA_AVG",
+        "BASEMENTAREA_MODE",
+        "BASEMENTAREA_MEDI",
+        "NONLIVINGAREA_AVG",
+        "NONLIVINGAREA_MODE",
+        "NONLIVINGAREA_MEDI",
+        "ELEVATORS_AVG",
+        "ELEVATORS_MODE",
+        "ELEVATORS_MEDI",
+        "WALLSMATERIAL_MODE",
+        "APARTMENTS_AVG",
+        "APARTMENTS_MODE",
+        "APARTMENTS_MEDI",
+        "ENTRANCES_AVG",
+        "ENTRANCES_MODE",
+        "ENTRANCES_MEDI",
+        "LIVINGAREA_AVG",
+        "LIVINGAREA_MODE",
+        "LIVINGAREA_MEDI",
+        "HOUSETYPE_MODE",
+        "FLOORSMAX_AVG",
+        "FLOORSMAX_MODE",
+        "FLOORSMAX_MEDI",
+        "YEARS_BEGINEXPLUATATION_AVG",
+        "YEARS_BEGINEXPLUATATION_MODE",
+        "YEARS_BEGINEXPLUATATION_MEDI",
+        "EMERGENCYSTATE_MODE",
+        "NAME_TYPE_SUITE",
+    ]
+
+    df = df.drop(columns=cols_to_drop)
+    for col in [
+        "EXT_SOURCE_1",
+        "EXT_SOURCE_2",
+        "EXT_SOURCE_3",
+        "TOTALAREA_MODE",
+        "OWN_CAR_AGE",
+    ]:
+        df[col] = df[col].fillna(0)
+
+    for col in ["OCCUPATION_TYPE"]:
+        df[col] = df[col].fillna("Unknown")
+
+    df["FLAG_OWN_CAR"] = df["FLAG_OWN_CAR"].map({"Y": 1, "N": 0})
+    df["FLAG_OWN_REALTY"] = df["FLAG_OWN_REALTY"].map({"Y": 1, "N": 0})
+    df["TARGET"] = 1 - df["TARGET"]
+
+    df = df.dropna().reset_index(drop=True)
+    df.to_csv("../data/homecredit.csv", index=False)
 
 
 if __name__ == "__main__":
     preprocess_german()
     preprocess_taiwan()
     preprocess_adult()
+    preprocess_acsincome()
+    preprocess_homecredit()
