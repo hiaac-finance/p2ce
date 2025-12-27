@@ -237,6 +237,32 @@ def preprocess_homecredit():
         "YEARS_BEGINEXPLUATATION_MEDI",
         "EMERGENCYSTATE_MODE",
         "NAME_TYPE_SUITE",
+        "FLAG_MOBIL",
+        "FLAG_EMP_PHONE",
+        "FLAG_WORK_PHONE",
+        "FLAG_CONT_MOBILE",
+        "FLAG_PHONE",
+        "FLAG_EMAIL",
+        "FLAG_DOCUMENT_2",
+        "FLAG_DOCUMENT_3",
+        "FLAG_DOCUMENT_4",
+        "FLAG_DOCUMENT_5",
+        "FLAG_DOCUMENT_6",
+        "FLAG_DOCUMENT_7",
+        "FLAG_DOCUMENT_8",
+        "FLAG_DOCUMENT_9",
+        "FLAG_DOCUMENT_10",
+        "FLAG_DOCUMENT_11",
+        "FLAG_DOCUMENT_12",
+        "FLAG_DOCUMENT_13",
+        "FLAG_DOCUMENT_14",
+        "FLAG_DOCUMENT_15",
+        "FLAG_DOCUMENT_16",
+        "FLAG_DOCUMENT_17",
+        "FLAG_DOCUMENT_18",
+        "FLAG_DOCUMENT_19",
+        "FLAG_DOCUMENT_20",
+        "FLAG_DOCUMENT_21",
     ]
 
     df = df.drop(columns=cols_to_drop)
@@ -257,6 +283,12 @@ def preprocess_homecredit():
     df["TARGET"] = 1 - df["TARGET"]
 
     df = df.dropna().reset_index(drop=True)
+
+    positive_rows = df[df["TARGET"] == 1].sample(n=50_000, random_state=0)
+    negative_rows = df[df["TARGET"] == 0]
+
+    df = pd.concat([positive_rows, negative_rows], axis=0).reset_index(drop=True)
+
     df.to_csv("../data/homecredit.csv", index=False)
 
 

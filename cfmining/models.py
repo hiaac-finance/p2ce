@@ -131,6 +131,7 @@ class MLPClassifier(BaseEstimator, ClassifierMixin):
                 [1 / class_counts[i] for i in range(len(class_counts))],
                 dtype=torch.float,
             )
+            class_weights /= class_weights.sum()
             if not self.device is None:
                 class_weights = class_weights.to(self.device)
         else:

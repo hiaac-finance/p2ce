@@ -426,6 +426,10 @@ class _ActionElement(object):
         if self._variable_type == int:
             step = np.ceil(step)
 
+        if (stop - start) == 0:
+            stop = start + 1
+            step = 1
+
         if self.step_type == "splits":
             if self._variable_type is float:
                 grid = np.unique(np.concatenate(([start], self.splits, [stop])))

@@ -84,10 +84,13 @@ def run_experiments(
             except:
                 pass
             start = time.time()
-            method.fit(individual.values)
+            try:
+                method.fit(individual.values)
+                solutions = method.solutions
+            except:
+                solutions = []
             end = time.time()
 
-            solutions = method.solutions
 
             results.append(
                 {
