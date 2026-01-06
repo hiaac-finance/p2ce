@@ -181,10 +181,17 @@ class Dice:
         )
         data_extended = data.copy()
         data_extended["target"] = Y
+        permitted_range = {}
+        for feature in continuous_features:
+            permitted_range[feature] = (
+                np.quantile(data[feature], 0.1),
+                np.quantile(data[feature], 0.99),
+            )
         dice_data = dice_ml.Data(
             dataframe=data_extended,
             continuous_features=continuous_features,
             outcome_name="target",
+            permitted_range=permitted_range,
         )
         self.exp = dice_ml.Dice(dice_data, dice_model)
 

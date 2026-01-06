@@ -243,5 +243,4 @@ if __name__ == "__main__":
     dataset_name = datasets[dataset_id]
     method_name = methods[method_id]
 
-    if dataset_name == "homecredit":
-        run(dataset_name, method_name, n_samples=args.n_samples)
+    run(dataset_name, method_name, n_samples=args.n_samples)

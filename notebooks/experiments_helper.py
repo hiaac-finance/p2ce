@@ -163,9 +163,9 @@ def summarize_results(results, dataset_name):
             )
             n_changes.append(n_changes_)
         n_changes = np.mean(n_changes)
-        outliers = np.mean(
+        outliers = np.max(
             [outlier_detection.predict(np.array(s)[None, :]) == -1 for s in solutions]
-        )
+        ).astype(int)
         if len(solutions) == 1:
             diversity = 0
         else:
@@ -267,7 +267,7 @@ def format_df_table(df, agg_column, columns):
         df.groupby(agg_column)
         .agg(dict([(c, "std") for c in columns]))
         .reset_index()
-        .round(3)
+        .round(1)
     )
     df_90p = (
         df.groupby(agg_column)
@@ -279,10 +279,10 @@ def format_df_table(df, agg_column, columns):
     for col in columns:
         df_mean[col] = (
             df_mean[col].astype("str")
-            + " (+-"
+            + " ($\pm$"
             + df_std[col].astype("str")
-            + ") | "
-            + df_90p[col].astype("str")
+            + ")" # | "
+            #+ df_90p[col].astype("str")
         )
     return df_mean
 
