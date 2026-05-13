@@ -8,7 +8,7 @@ This repository contains the implementation of P²CE and executed experiments. T
 
 ## Installation
 
-The recommend way to run the code is to set a Docker container. The file `Dockerfile`contains the configuration of the container utilized during development. Another way is to have Python installed on your machine. It is recommended to use a virtual environment to manage dependencies. Follow the steps below to set up your environment:
+The recommend way to run the code is using a conda environment. Follow the steps below to set up your environment:
 
 1. Create a virtual environment:
    ```bash
@@ -33,7 +33,7 @@ The recommend way to run the code is to set a Docker container. The file `Docker
 ## Directory Structure
 
 - `cfmining/`: Contains Python scripts with algorithm implementation (`algorithms.py`), data preprocessing (`data_preprocessing.py`and `datasets.py`), and some other utilities for P²CE functioning.
-- `notebooks/`: Contains Jupyter notebooks with experiments. `experiments_[model_name].ipynb` presents the execution of experiments with the "model_name" classifier.
+- `notebooks/`: Contains scripts and Jupyter notebooks with experiments. `experiments_[model_name].py` presents the execution of experiments with the "model_name" classifier.
 - `data/`: A directory with preprocessed datasets.
 - This reposity was built upon MAPOCAM repository, and the implementation of the algorithm is also present.
 
@@ -41,4 +41,10 @@ The recommend way to run the code is to set a Docker container. The file `Docker
 
 1. **Experiments**:
 
-    - Run all cells of Jupyter notebooks.
+To run the experiments, navigate to the `notebooks` directory and execute the desired experiment script. For example, to run experiments with a Random Forest classifier:
+```bash
+cd notebooks
+python experiments_lgbm.py --dataset german --method p2ce_tree_abs_diff
+```
+
+Where `--dataset` specifies the dataset to use (options: german, taiwan, adult, acsincome, homecredit) and `--method` specifies the method to evaluate. Please check each script to check the available methods.

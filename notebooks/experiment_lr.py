@@ -87,16 +87,22 @@ def run(dataset_name, method_name, n_samples=500):
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument(
-        "--idx",
-        type=int,
-        default=0,
-        help="idx",
+        "--dataset",
+        type=str,
+        default="german",
+        help="Dataset name (german, taiwan, adult)",
     )
     parser.add_argument(
         "--n_samples",
         type=int,
         default=500,
         help="Number of samples to use from the dataset",
+    )
+    parser.add_argument(
+        "--method",
+        type=str,
+        default="p2ce_abs_diff",
+        help="Method name (p2ce_abs_diff, p2ce_ablation_abs_diff, mapocam_abs_diff)",
     )
     datasets = ["german", "taiwan", "adult"]
     methods = [
@@ -106,13 +112,5 @@ if __name__ == "__main__":
     ]
     args = parser.parse_args()
 
-    if len(datasets) * len(methods) <= args.idx:
-        raise ValueError("idx out of range")
-    
-    dataset_id = args.idx // len(methods)
-    method_id = args.idx % len(methods)
 
-    dataset_name = datasets[dataset_id]
-    method_name = methods[method_id]
-
-    run(dataset_name, method_name, n_samples=args.n_samples)
+    run(args.dataset, args.method, n_samples=args.n_samples)

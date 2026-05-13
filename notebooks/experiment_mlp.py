@@ -198,10 +198,16 @@ def run(dataset_name, method_name, n_samples=500):
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument(
-        "--idx",
-        type=int,
-        default=0,
-        help="idx",
+        "--dataset",
+        type=str,
+        default="german",
+        help="Dataset name (german, taiwan, adult, acsincome, homecredit)",
+    )
+    parser.add_argument(
+        "--method",
+        type=str,
+        default="p2ce_deep_abs_diff",
+        help="Method name (p2ce_deep_abs_diff, mapocam_deep_abs_diff, nice, dice, p2ce_deep_multi, mapocam_deep_multi, dice_multi)",
     )
     parser.add_argument(
         "--n_samples",
@@ -220,10 +226,5 @@ if __name__ == "__main__":
         "dice_multi",
     ]
     args = parser.parse_args()
-    dataset_id = args.idx // len(methods)
-    method_id = args.idx % len(methods)
 
-    dataset_name = datasets[dataset_id]
-    method_name = methods[method_id]
-
-    run(dataset_name, method_name, n_samples=args.n_samples)
+    run(args.dataset, args.method, n_samples=args.n_samples)

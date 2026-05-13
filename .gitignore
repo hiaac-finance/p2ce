@@ -218,5 +218,6 @@ __marimo__/
 results/
 models/
 data/
+figures/
 *.err
 *.out
